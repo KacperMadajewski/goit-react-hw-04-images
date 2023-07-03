@@ -1,0 +1,9 @@
+.btn {
+    margin-top: 10px;
+    font-size: 38px;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: #303f9f;
+}
