@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, {useState} from 'react';
 import css from './Searchbar.module.css';
 
 export function Searchbar() {
@@ -15,7 +14,7 @@ export function Searchbar() {
   };
 
   const handleChange = e => {
-    setQuery({ query: e.target.value });
+    setQuery(e.target.value );
   };
 
   return (

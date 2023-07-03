@@ -27,7 +27,7 @@ export const App = () => {
 
     searchQuery(query, 1)
       .then(response => {
-        setImages({ images: response.data.hits });
+        setImages(response.data.hits);
       })
       .catch(error => {
         console.error('Błąd podczas pobierania danych:', error);
@@ -52,7 +52,7 @@ export const App = () => {
     searchQuery(query, nextPage)
       .then(response => {
         const newImages = response.data.hits;
-        setImages(prevState => [...prevState.images, ...newImages]);
+        setImages(prevImages => [...prevImages, ...newImages]);
         setPage(nextPage);
       })
       .catch(error => {
@@ -73,6 +73,7 @@ export const App = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: 'column',
         fontSize: 40,
         color: '#010101',
       }}
