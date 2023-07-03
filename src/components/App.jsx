@@ -1,17 +1,18 @@
-import { Component, useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { searchQuery } from './Services/api';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
-import Button from './Button/Button';
-
+import { Button } from './Button/Button';
 
 export const App = () => {
-  
+  const [query, setQuery] = useState('');
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false)
-  const [selectedImage, setSelectedImage] = useState(null)
+  const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [page, setPage] = useState(1);
 
   // state = {
   //   query: '',
@@ -20,10 +21,10 @@ export const App = () => {
   //   selectedImage: null,
   //   page: 1,
   // };
-  
-  const handleSearch = (query) => {
+
+  const handleSearch = query => {
     setLoading(true);
-  
+
     searchQuery(query, 1)
       .then(response => {
         setImages({ images: response.data.hits });
@@ -35,10 +36,35 @@ export const App = () => {
         setLoading(false);
       });
   };
-  
-  const openModal = (imageUrl) => {
+
+  const openModal = imageUrl => {
     setSelectedImage(imageUrl);
   };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
+
+  const loadMoreImages = () => {
+    const nextPage = page + 1;
+    setLoading(true);
+
+    searchQuery(query, nextPage)
+      .then(response => {
+        const newImages = response.data.hits;
+        setImages(prevState => [...prevState.images, ...newImages]);
+        setPage(nextPage);
+      })
+      .catch(error => {
+        console.error('Błąd podczas pobierania danych:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const showLoadButton = images.length > 0;
+  const disableLoadButton = loading || page === -1;
 
   return (
     <div
@@ -56,14 +82,10 @@ export const App = () => {
       {loading && <Loader />}
 
       {selectedImage && (
-        <Modal
-          isOpen={true}
-          onClose={this.closeModal}
-          imageUrl={selectedImage}
-        />
+        <Modal isOpen={true} onClose={closeModal} imageUrl={selectedImage} />
       )}
       <Button
-        onClick={this.loadMoreImages}
+        onClick={loadMoreImages}
         showButton={showLoadButton}
         disabled={disableLoadButton}
       >
@@ -72,60 +94,3 @@ export const App = () => {
     </div>
   );
 };
-
-
-
-
-export class App2 extends Component {
-
-
-  loadMoreImages = () => {
-    const { query, page } = this.state;
-    const nextPage = page + 1;
-    this.setState({ loading: true });
-
-    searchQuery(query, nextPage)
-      .then(response => {
-        const newImages = response.data.hits;
-        this.setState(prevState => ({
-          images: [...prevState.images, ...newImages],
-          page: nextPage,
-        }));
-      })
-      .catch(error => {
-        console.error('Błąd podczas pobierania danych:', error);
-      })
-      .finally(() => {
-        this.setState({ loading: false });
-      });
-  };
-
-
-  closeModal = () => {
-    this.setState({ selectedImage: null });
-  };
-
-  render() {
-    const { loading, images, selectedImage, page } = this.state;
-    const showLoadButton = images.length > 0;
-    const disableLoadButton = loading || page === -1;
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          fontSize: 40,
-          color: '#010101',
-        }}
-      >
-      </div>
-    );
-  }
-}
-
-
-
-
-
