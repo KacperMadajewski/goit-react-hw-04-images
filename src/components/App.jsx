@@ -8,17 +8,23 @@ import { Modal } from './Modal/Modal';
 import { Button } from './Button/Button';
 
 export const App = () => {
+  const [query, setQuery] = useState('');
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [page, setPage] = useState(1);
 
-  const handleSearch = query => {
-    setLoading(true);
+  const handleSubmit = e => {
+    e.preventDefault();
+    onSubmit(query);
+  };
 
+  const onSubmit = query => {
+    console.log(query);
     searchQuery(query, 1)
       .then(response => {
         setImages(response.data.hits);
+        setPage(1);
       })
       .catch(error => {
         console.error('Błąd podczas pobierania danych:', error);
@@ -26,6 +32,10 @@ export const App = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleChange = e => {
+    setQuery(e.target.value);
   };
 
   const openModal = imageUrl => {
@@ -40,7 +50,7 @@ export const App = () => {
     const nextPage = page + 1;
     setLoading(true);
 
-    searchQuery(nextPage)
+    searchQuery(query, nextPage)
       .then(response => {
         const newImages = response.data.hits;
         setImages(prevImages => [...prevImages, ...newImages]);
@@ -60,7 +70,6 @@ export const App = () => {
   return (
     <div
       style={{
-        height: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -69,7 +78,11 @@ export const App = () => {
         color: '#010101',
       }}
     >
-      <Searchbar onSubmit={handleSearch} />
+      <Searchbar
+        forSubmit={handleSubmit}
+        forChange={handleChange}
+        value={query}
+      />
       <ImageGallery items={images} onItemClick={openModal} />
       {loading && <Loader />}
 

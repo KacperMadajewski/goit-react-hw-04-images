@@ -16,8 +16,11 @@ export function Modal({ imageUrl, onClose }) {
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return document.removeEventListener('keydown', handleKeyDown);
+    const handleKeyDownEvent = event => handleKeyDown(event);
+    document.addEventListener('keydown', handleKeyDownEvent);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDownEvent);
+    };
   });
 
   return (

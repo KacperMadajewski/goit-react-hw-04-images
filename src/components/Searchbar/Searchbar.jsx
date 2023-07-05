@@ -1,26 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import css from './Searchbar.module.css';
 
-export function Searchbar() {
-  const [query, setQuery] = useState('');
-  
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    onSubmit(query);
-  };
-
-  const onSubmit = query => {
-    console.log(query);
-  };
-
-  const handleChange = e => {
-    setQuery(e.target.value );
-  };
-
+export function Searchbar({ forSubmit, forChange, value }) {
   return (
     <header className={css.header}>
-      <form className={css.form} onSubmit={handleSubmit}>
+      <form className={css.form} onSubmit={forSubmit}>
         <button className={css.formBtn} type="submit">
           <span className={css.formSpan}>Search</span>
         </button>
@@ -29,8 +13,8 @@ export function Searchbar() {
           className={css.formInput}
           type="text"
           placeholder="Search images and photos"
-          onChange={handleChange}
-          value={query}
+          onChange={forChange}
+          value={value}
         />
       </form>
     </header>
