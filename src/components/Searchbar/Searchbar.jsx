@@ -3,6 +3,7 @@ import css from './Searchbar.module.css';
 
 export function Searchbar() {
   const [query, setQuery] = useState('');
+  
 
   const handleSubmit = e => {
     e.preventDefault();

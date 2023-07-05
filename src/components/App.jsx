@@ -8,19 +8,10 @@ import { Modal } from './Modal/Modal';
 import { Button } from './Button/Button';
 
 export const App = () => {
-  const [query, setQuery] = useState('');
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [page, setPage] = useState(1);
-
-  // state = {
-  //   query: '',
-  //   loading: false,
-  //   images: [],
-  //   selectedImage: null,
-  //   page: 1,
-  // };
 
   const handleSearch = query => {
     setLoading(true);
@@ -49,7 +40,7 @@ export const App = () => {
     const nextPage = page + 1;
     setLoading(true);
 
-    searchQuery(query, nextPage)
+    searchQuery(nextPage)
       .then(response => {
         const newImages = response.data.hits;
         setImages(prevImages => [...prevImages, ...newImages]);
