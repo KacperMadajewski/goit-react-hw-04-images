@@ -13,6 +13,7 @@ export const App = () => {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [page, setPage] = useState(1);
+  const [hasMoreImages, setHasMoreImages] = useState(true);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -20,11 +21,12 @@ export const App = () => {
   };
 
   const onSubmit = query => {
-    console.log(query);
     searchQuery(query, 1)
       .then(response => {
-        setImages(response.data.hits);
+        const newImages = response.data.hits;
+        setImages(newImages);
         setPage(1);
+        setHasMoreImages(newImages.length > 0);
       })
       .catch(error => {
         console.error('Błąd podczas pobierania danych:', error);
@@ -55,6 +57,7 @@ export const App = () => {
         const newImages = response.data.hits;
         setImages(prevImages => [...prevImages, ...newImages]);
         setPage(nextPage);
+        setHasMoreImages(newImages.length > 0);
       })
       .catch(error => {
         console.error('Błąd podczas pobierania danych:', error);
@@ -65,7 +68,7 @@ export const App = () => {
   };
 
   const showLoadButton = images.length > 0;
-  const disableLoadButton = loading || page === -1;
+  const disableLoadButton = loading || page === -1 || !hasMoreImages;
 
   return (
     <div
@@ -89,13 +92,9 @@ export const App = () => {
       {selectedImage && (
         <Modal isOpen={true} onClose={closeModal} imageUrl={selectedImage} />
       )}
-      <Button
-        onClick={loadMoreImages}
-        showButton={showLoadButton}
-        disabled={disableLoadButton}
-      >
-        Load more
-      </Button>
+      {showLoadButton && (
+        <Button onClick={loadMoreImages} disabled={disableLoadButton} />
+      )}
     </div>
   );
 };
